@@ -26,11 +26,20 @@ export type CoinProbe = {
   last5?: { open_time_utc: string; open_time_brt: string; o: number; h: number; l: number; c: number; closed: boolean }[];
 };
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 async function probeOne(symbol: string): Promise<CoinProbe> {
   let candles: Candle1m[] | null = null;
   const out: CoinProbe = { symbol, ok: false };
   try {
-    candles = await okxCandles(symbol, 5);
+    try {
+      candles = await okxCandles(symbol, 5);
+    } catch (e) {
+      // 429 = limite momentâneo da OKX: espera 1 s e tenta mais uma vez.
+      if ((e as SourceError).httpStatus !== 429) throw e;
+      await sleep(1_000);
+      candles = await okxCandles(symbol, 5);
+    }
     out.source = "okx";
     out.okxStatus = 200;
   } catch (e) {
@@ -62,7 +71,12 @@ async function probeOne(symbol: string): Promise<CoinProbe> {
 }
 
 export async function runPriceProbe() {
-  const coins = await Promise.all(SERVER_UNIVERSE.map(probeOne));
+  // Uma moeda por vez, com pausa: 10 pedidos simultâneos geram HTTP 429 na OKX a partir da nuvem.
+  const coins: CoinProbe[] = [];
+  for (const s of SERVER_UNIVERSE) {
+    coins.push(await probeOne(s));
+    await sleep(250);
+  }
   const ok = coins.filter((c) => c.ok).length;
   const sources = [...new Set(coins.filter((c) => c.source).map((c) => c.source))];
   return { at: new Date().toISOString(), responded: ok, total: coins.length, sources, coins };
