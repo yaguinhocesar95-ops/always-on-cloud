@@ -29,6 +29,42 @@ export type Database = {
         }
         Relationships: []
       }
+      cron_runs: {
+        Row: {
+          cycle: Json | null
+          error: string | null
+          id: number
+          ok: boolean
+          probe: Json | null
+          ran_at: string
+          responded: number
+          sources: string[]
+          total: number
+        }
+        Insert: {
+          cycle?: Json | null
+          error?: string | null
+          id?: never
+          ok: boolean
+          probe?: Json | null
+          ran_at?: string
+          responded?: number
+          sources?: string[]
+          total?: number
+        }
+        Update: {
+          cycle?: Json | null
+          error?: string | null
+          id?: never
+          ok?: boolean
+          probe?: Json | null
+          ran_at?: string
+          responded?: number
+          sources?: string[]
+          total?: number
+        }
+        Relationships: []
+      }
       user_kv: {
         Row: {
           key: string

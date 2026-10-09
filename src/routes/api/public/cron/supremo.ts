@@ -14,14 +14,23 @@ export const Route = createFileRoute("/api/public/cron/supremo")({
         if (!expected || a.length !== b.length || !timingSafeEqual(a, b)) {
           return new Response("Unauthorized", { status: 401 });
         }
+        const { runPriceProbe } = await import("@/lib/price-probe.server");
         const { runCloudCycle } = await import("@/lib/cloud-run.server");
+        const probe = await runPriceProbe();
+        let cycle: unknown = null;
+        let error: string | null = null;
         try {
-          const out = await runCloudCycle(supabaseAdmin);
-          return Response.json(out);
+          cycle = await runCloudCycle(supabaseAdmin);
         } catch (e) {
+          error = (e as Error).message;
           console.error("cron supremo", e);
-          return Response.json({ error: (e as Error).message }, { status: 500 });
         }
+        const ok = probe.responded > 0 && !error;
+        await supabaseAdmin.from("cron_runs").insert({
+          ok, responded: probe.responded, total: probe.total, sources: probe.sources as string[],
+          probe: probe as never, cycle: cycle as never, error,
+        });
+        return Response.json({ ok, probe, cycle, error }, { status: ok ? 200 : 502 });
       },
     },
   },
