@@ -13,3 +13,10 @@
 - [x] Testes (bilhete, régua, estrelas, preferências) e conferência em 360/768/1280/1920 px
 - [x] Conferência de texto vazando: Replay, Texto grande e Foco; caixa de moeda vazia corrigida
 - [x] Sem intervalo mínimo entre apostas no automático
+
+# Rodada automática na nuvem
+- [x] Conferência de preços (OKX, reserva Bybit) em toda rodada, 10 moedas, vela em andamento marcada como provisória
+- [x] Registro de cada rodada automática
+- [ ] Provar no app publicado: 5 rodadas seguidas com 200 (aguarda atualizar a publicação)
+- [ ] Resolver apostas só com velas fechadas (hoje usa o preço da Binance)
+- [ ] Passo 2: tabelas
