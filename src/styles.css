@@ -1,31 +1,32 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "@fontsource/atkinson-hyperlegible-mono/400.css";
+@import "@fontsource/atkinson-hyperlegible-mono/500.css";
+@import "@fontsource/atkinson-hyperlegible-mono/600.css";
+@import "@fontsource/atkinson-hyperlegible-mono/700.css";
+@import "@fontsource/atkinson-hyperlegible-mono/800.css";
 
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ * Design system — casa de apostas premium: preto absoluto + ouro.
+ * Inspirado no visual BetMGM Brasil: fundo preto, cartões grafite,
+ * dourado metálico como única cor de marca, títulos condensados em
+ * caixa alta e cantos discretos (quase retos).
+ * Tipografia: Barlow Condensed (títulos) + Barlow (texto) + Atkinson Hyperlegible Mono (números).
  */
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --font-sans: "Barlow", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Barlow Condensed", "Barlow", system-ui, sans-serif;
+  --font-mono: "Atkinson Hyperlegible Mono", ui-monospace, "SFMono-Regular", monospace;
+  --radius: 0.5rem;
+  --radius-sm: calc(var(--radius) - 3px);
+  --radius-md: calc(var(--radius) - 1px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --radius-xl: calc(var(--radius) + 3px);
+  --radius-2xl: calc(var(--radius) + 6px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -46,90 +47,98 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-info: var(--info);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-gold-soft: var(--gold-soft);
+  --text-caption: 0.75rem;
+  --text-body: 0.875rem;
+  --text-lead: 1rem;
+  --text-title: 1.25rem;
+  --text-kpi: 1.75rem;
+  --text-hero: 2.5rem;
+  --color-sbt-red: var(--destructive);
+  --color-sbt-blue: var(--primary);
+  --color-sbt-yellow: var(--primary);
+  --color-sbt-green: var(--success);
+  --color-chart-1: var(--primary);
+  --color-chart-2: var(--success);
+  --color-chart-3: var(--warning);
+  --color-chart-4: var(--destructive);
+  --color-chart-5: var(--muted-foreground);
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+  /* Preto de casa de apostas: fundo quase puro, cartões grafite. */
+  --background: oklch(0.1 0.004 70);
+  --foreground: oklch(0.97 0.005 85);
+  --surface: oklch(0.16 0.006 70);
+  --surface-2: oklch(0.195 0.008 70);
+  --surface-3: oklch(0.235 0.01 70);
+  --card: oklch(0.16 0.006 70);
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.13 0 0);
+  --popover-foreground: oklch(0.98 0 0);
+  /* Ouro metálico da marca. */
+  --primary: oklch(0.8 0.115 82);
+  --primary-foreground: oklch(0.12 0.01 70);
+  --secondary: oklch(0.2 0 0);
+  --secondary-foreground: oklch(0.96 0 0);
+  --muted: oklch(0.18 0 0);
+  --muted-foreground: oklch(0.74 0.008 80);
+  --accent: oklch(0.24 0.035 82);
+  --accent-foreground: oklch(0.88 0.1 86);
+  --destructive: oklch(0.6 0.21 26);
+  --destructive-foreground: oklch(0.98 0.01 60);
+  --border: oklch(0.85 0.06 85 / 12%);
+  --input: oklch(1 0 0 / 13%);
+  --ring: oklch(0.79 0.13 83);
+  --success: oklch(0.74 0.17 150);
+  --warning: oklch(0.82 0.14 86);
+  --gold: oklch(0.82 0.13 85);
+  --gold-deep: oklch(0.63 0.11 66);
+  --gold-soft: oklch(0.82 0.13 85 / 12%);
+  --info: oklch(0.74 0.11 235);
+  --success-foreground: oklch(0.14 0.03 150);
+  --warning-foreground: oklch(0.16 0.03 86);
+
+  --gradient-accent: linear-gradient(
+    135deg,
+    oklch(0.93 0.09 95) 0%,
+    oklch(0.82 0.13 85) 45%,
+    var(--gold-deep) 100%
+  );
+  --gradient-surface: linear-gradient(
+    180deg,
+    oklch(1 0 0 / 4%) 0%,
+    oklch(1 0 0 / 0%) 60%
+  );
+  --gradient-hairline: linear-gradient(
+    90deg,
+    oklch(0.63 0.11 66 / 0%) 0%,
+    oklch(0.86 0.13 88 / 85%) 50%,
+    oklch(0.63 0.11 66 / 0%) 100%
+  );
+  --shadow-soft:
+    0 1px 0 oklch(1 0 0 / 5%) inset, 0 18px 40px -26px oklch(0 0 0 / 90%);
+  --shadow-glow:
+    0 1px 0 oklch(1 0 0 / 6%) inset, 0 24px 60px -30px oklch(0 0 0 / 95%),
+    0 0 0 1px oklch(0.82 0.13 85 / 12%);
+}
+
+@theme inline {
+  --color-gold: var(--gold);
+  --color-gold-deep: var(--gold-deep);
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  --background: oklch(0.08 0 0);
+  --foreground: oklch(0.98 0 0);
 }
 
 @layer base {
@@ -139,6 +148,260 @@
 
   body {
     background-color: var(--color-background);
+    /* Brilho dourado discreto no topo, como as capas de promoção. */
+    background-image:
+      radial-gradient(900px 420px at 50% -20%, oklch(0.82 0.13 85 / 14%) 0%, transparent 70%),
+      linear-gradient(180deg, oklch(0.17 0.008 70) 0%, oklch(0.1 0.004 70) 420px);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Cartão de aposta: grafite sólido, borda fina, fio de ouro no topo. */
+@utility tv-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background-image: var(--gradient-accent);
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--gradient-surface);
+    pointer-events: none;
+  }
+}
+
+/* Bloco interno de métrica (odds/cotações). */
+@utility tv-plate {
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background-color: var(--color-surface-2);
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    transform 180ms ease;
+
+  &:hover {
+    border-color: oklch(0.82 0.13 85 / 45%);
+    background-color: oklch(0.22 0.01 80);
+  }
+}
+
+@utility tv-rainbow {
+  background-image: var(--gradient-accent);
+}
+
+/* Títulos: caixa alta, densos, com leve espaçamento — cara de esportiva. */
+@utility tv-headline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+@utility tv-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* Painel do preço ao vivo: preto profundo com halo dourado. */
+@utility tv-screen {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid oklch(0.82 0.13 85 / 22%);
+  border-radius: 0.75rem;
+  background-color: oklch(0.11 0 0);
+  background-image: radial-gradient(
+    700px 220px at 12% 0%,
+    oklch(0.82 0.13 85 / 10%) 0%,
+    transparent 70%
+  );
+  color: var(--color-foreground);
+  box-shadow: var(--shadow-glow);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background-image: var(--gradient-accent);
+  }
+}
+
+/* Número de destaque (gatilho) em ouro luminoso. */
+@utility tv-glow-number {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  letter-spacing: 0;
+  color: var(--gold);
+  text-shadow: 0 0 28px oklch(0.82 0.13 85 / 35%);
+}
+
+/* Estrelinhas em ouro. */
+@utility tv-star {
+  color: var(--gold);
+  fill: var(--gold);
+  filter: drop-shadow(0 1px 8px oklch(0.82 0.13 85 / 55%));
+}
+
+@utility tv-gold-text {
+  background-image: var(--gradient-accent);
+  background-clip: text;
+  color: transparent;
+}
+
+@utility tv-grid-lines {
+  background-image: none;
+}
+
+/* ===== Preferências de leitura (ypx-ui-layout-v1) ===== */
+html[data-text="large"] { font-size: 112.5%; }
+html[data-focus="true"] { font-size: 118%; }
+html[data-focus="true"][data-text="large"] { font-size: 128%; }
+html[data-contrast="high"] {
+  --muted-foreground: oklch(0.86 0.006 80);
+  --border: oklch(0.85 0.06 85 / 28%);
+  --surface: oklch(0.13 0.004 70);
+  --surface-2: oklch(0.17 0.006 70);
+}
+
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    border-radius: 0.375rem;
+  }
+  html { scroll-padding-top: 8rem; }
+}
+
+/* Divisor fino dourado entre grandes seções. */
+@utility ypx-hairline {
+  height: 1px;
+  width: 100%;
+  background-image: var(--gradient-hairline);
+}
+
+/* Rótulo de KPI: pequeno, caixa alta. */
+@utility ypx-label {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-muted-foreground);
+}
+
+@utility ypx-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+
+/* Numeric displays share accessible digits, including prices and numeric inputs. */
+.tabular-nums,
+input[type="number"] {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  letter-spacing: 0;
+}
+
+.font-mono,
+.tv-glow-number {
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+
+/* Cartão neutro de 2º nível. */
+@utility ypx-card {
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Destaque principal com borda dourada. */
+@utility ypx-feature {
+  border: 1px solid oklch(0.82 0.13 85 / 45%);
+  border-radius: 0.5rem;
+  background-color: var(--color-surface);
+  background-image: radial-gradient(600px 200px at 0% 0%, var(--gold-soft) 0%, transparent 70%);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Destaque de 1,5 s quando algo relevante muda num cartão. */
+@keyframes ypx-highlight {
+  0% { box-shadow: 0 0 0 0 oklch(0.82 0.13 85 / 0%); }
+  25% { box-shadow: 0 0 0 3px oklch(0.82 0.13 85 / 55%); }
+  100% { box-shadow: 0 0 0 0 oklch(0.82 0.13 85 / 0%); }
+}
+@utility ypx-highlight {
+  animation: ypx-highlight 1.5s ease-out 1;
+}
+
+/* Brilho suave do bilhete "Valendo" (1 ciclo a cada 2,4 s, sem piscar). */
+@keyframes ypx-breathe {
+  0%, 100% { border-color: oklch(0.82 0.13 85 / 35%); }
+  50% { border-color: oklch(0.82 0.13 85 / 75%); }
+}
+@utility ypx-breathe {
+  animation: ypx-breathe 2.4s ease-in-out infinite;
+}
+
+/* Indicador "ao vivo" — único movimento contínuo permitido. */
+@keyframes ypx-live {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+@utility ypx-live-ring {
+  animation: ypx-live 1.6s ease-out infinite;
+}
+
+/* Skeleton com brilho suave. */
+@keyframes ypx-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@utility ypx-skeleton {
+  border-radius: 0.5rem;
+  background-image: linear-gradient(90deg, var(--color-surface-2) 0%, var(--color-surface-3) 50%, var(--color-surface-2) 100%);
+  background-size: 200% 100%;
+  animation: ypx-shimmer 1.8s linear infinite;
+}
+
+@keyframes ypx-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@utility ypx-page {
+  animation: ypx-fade 150ms ease-out 1;
+}
+
+@utility ypx-safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
