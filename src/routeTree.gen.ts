@@ -10,33 +10,103 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ReplayRouteImport } from './routes/replay'
+import { Route as SupremoRouteImport } from './routes/supremo'
+import { Route as ApiPublicCronCandlesTestRouteImport } from './routes/api/public/cron/candles-test'
+import { Route as ApiPublicCronSupremoRouteImport } from './routes/api/public/cron/supremo'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReplayRoute = ReplayRouteImport.update({
+  id: '/replay',
+  path: '/replay',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupremoRoute = SupremoRouteImport.update({
+  id: '/supremo',
+  path: '/supremo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCronCandlesTestRoute =
+  ApiPublicCronCandlesTestRouteImport.update({
+    id: '/api/public/cron/candles-test',
+    path: '/api/public/cron/candles-test',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronSupremoRoute = ApiPublicCronSupremoRouteImport.update({
+  id: '/api/public/cron/supremo',
+  path: '/api/public/cron/supremo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/replay': typeof ReplayRoute
+  '/supremo': typeof SupremoRoute
+  '/api/public/cron/candles-test': typeof ApiPublicCronCandlesTestRoute
+  '/api/public/cron/supremo': typeof ApiPublicCronSupremoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/replay': typeof ReplayRoute
+  '/supremo': typeof SupremoRoute
+  '/api/public/cron/candles-test': typeof ApiPublicCronCandlesTestRoute
+  '/api/public/cron/supremo': typeof ApiPublicCronSupremoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/replay': typeof ReplayRoute
+  '/supremo': typeof SupremoRoute
+  '/api/public/cron/candles-test': typeof ApiPublicCronCandlesTestRoute
+  '/api/public/cron/supremo': typeof ApiPublicCronSupremoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/replay'
+    | '/supremo'
+    | '/api/public/cron/candles-test'
+    | '/api/public/cron/supremo'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/replay'
+    | '/supremo'
+    | '/api/public/cron/candles-test'
+    | '/api/public/cron/supremo'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/replay'
+    | '/supremo'
+    | '/api/public/cron/candles-test'
+    | '/api/public/cron/supremo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  ReplayRoute: typeof ReplayRoute
+  SupremoRoute: typeof SupremoRoute
+  ApiPublicCronCandlesTestRoute: typeof ApiPublicCronCandlesTestRoute
+  ApiPublicCronSupremoRoute: typeof ApiPublicCronSupremoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +118,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/replay': {
+      id: '/replay'
+      path: '/replay'
+      fullPath: '/replay'
+      preLoaderRoute: typeof ReplayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/supremo': {
+      id: '/supremo'
+      path: '/supremo'
+      fullPath: '/supremo'
+      preLoaderRoute: typeof SupremoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/candles-test': {
+      id: '/api/public/cron/candles-test'
+      path: '/api/public/cron/candles-test'
+      fullPath: '/api/public/cron/candles-test'
+      preLoaderRoute: typeof ApiPublicCronCandlesTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/supremo': {
+      id: '/api/public/cron/supremo'
+      path: '/api/public/cron/supremo'
+      fullPath: '/api/public/cron/supremo'
+      preLoaderRoute: typeof ApiPublicCronSupremoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  ReplayRoute: ReplayRoute,
+  SupremoRoute: SupremoRoute,
+  ApiPublicCronCandlesTestRoute: ApiPublicCronCandlesTestRoute,
+  ApiPublicCronSupremoRoute: ApiPublicCronSupremoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
