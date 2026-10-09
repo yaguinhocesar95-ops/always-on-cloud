@@ -1,9 +1,9 @@
 /**
- * Fonte de velas 1m do servidor: OKX principal, Bybit reserva.
+ * Fonte de velas 1m do servidor: OKX principal, Binance (endereços da nuvem) reserva, Bybit por último.
  * A Binance fica só no navegador (bloqueia IPs da nuvem).
  * Cada vela vem marcada: closed=true (fechada) ou false (minuto em andamento, provisória).
  */
-import { fetchWithTimeout } from "@/lib/binance";
+import { SERVER_HOSTS, fetchWithTimeout } from "@/lib/binance";
 
 export type Candle1m = {
   symbol: string; // formato Binance, ex. BTCUSDT
@@ -13,21 +13,21 @@ export type Candle1m = {
   l: number;
   c: number;
   volume: number;
-  source: "okx" | "bybit";
+  source: "okx" | "bybit" | "binance";
   /** true = vela fechada (OKX confirm=1); false = minuto em andamento, provisória. */
   closed: boolean;
 };
 
 /** Erro de fonte com o código HTTP da resposta (0 = sem resposta / tempo esgotado). */
 export class SourceError extends Error {
-  constructor(public source: "okx" | "bybit", public httpStatus: number, msg: string) {
+  constructor(public source: "okx" | "bybit" | "binance", public httpStatus: number, msg: string) {
     super(msg);
   }
 }
 
 const okxId = (s: string) => `${s.slice(0, -4)}-USDT`;
 
-async function get(source: "okx" | "bybit", url: string): Promise<unknown> {
+async function get(source: "okx" | "bybit" | "binance", url: string): Promise<unknown> {
   let r: Response;
   try {
     r = await fetchWithTimeout(url, 8_000);
@@ -57,13 +57,32 @@ export async function bybitCandles(symbol: string, limit = 300, now = Date.now()
     .sort((a, b) => a.openTime - b.openTime);
 }
 
+/** Binance pelos endereços que respondem da nuvem (SERVER_HOSTS), um após o outro. */
+export async function binanceCandles(symbol: string, limit = 300, now = Date.now()): Promise<Candle1m[]> {
+  let last: SourceError | null = null;
+  for (const h of SERVER_HOSTS) {
+    try {
+      const j = (await get("binance", `${h}/api/v3/klines?symbol=${symbol}&interval=1m&limit=${Math.min(limit, 1000)}`)) as (string | number)[][];
+      // A Binance não tem campo confirm: fechada quando o horário de fechamento já passou.
+      return j.map((d) => ({ symbol, openTime: Number(d[0]), o: +d[1]!, h: +d[2]!, l: +d[3]!, c: +d[4]!, volume: +d[5]!, source: "binance" as const, closed: Number(d[6]) < now }));
+    } catch (e) {
+      last = e as SourceError;
+    }
+  }
+  throw last ?? new SourceError("binance", 0, "binance sem endereço");
+}
+
 /** OKX primeiro; se falhar, Bybit. Devolve também o erro da principal, se houve. */
 export async function serverCandles(symbol: string, limit = 300): Promise<{ candles: Candle1m[]; fallbackReason?: string; okxStatus?: number }> {
   try {
     return { candles: await okxCandles(symbol, limit) };
   } catch (e) {
     const err = e as SourceError;
-    return { candles: await bybitCandles(symbol, limit), fallbackReason: err.message, okxStatus: err.httpStatus };
+    try {
+      return { candles: await binanceCandles(symbol, limit), fallbackReason: err.message, okxStatus: err.httpStatus };
+    } catch {
+      return { candles: await bybitCandles(symbol, limit), fallbackReason: err.message, okxStatus: err.httpStatus };
+    }
   }
 }
 
