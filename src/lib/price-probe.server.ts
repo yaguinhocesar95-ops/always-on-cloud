@@ -2,7 +2,7 @@
  * Conferência de preços feita em TODA rodada automática (mesmo sem usuários):
  * busca velas 1m das moedas do universo do servidor pela OKX (reserva Bybit).
  */
-import { SourceError, binanceCandles, bybitCandles, okxCandles, type Candle1m } from "@/lib/server-prices";
+import { OKX_HOSTS, SourceError, binanceCandles, bybitCandles, okxCandles, type Candle1m } from "@/lib/server-prices";
 
 /** Universo fixo do servidor: 10 moedas listadas em USDT na OKX e na Bybit. */
 export const SERVER_UNIVERSE = [
@@ -29,18 +29,22 @@ export type CoinProbe = {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-async function probeOne(symbol: string): Promise<CoinProbe> {
+async function probeOne(symbol: string, deadline: number): Promise<CoinProbe> {
   let candles: Candle1m[] | null = null;
   const out: CoinProbe = { symbol, ok: false };
   try {
-    try {
-      candles = await okxCandles(symbol, 5);
-    } catch (e) {
-      // 429 = limite momentâneo da OKX: espera 1 s e tenta mais uma vez.
-      if ((e as SourceError).httpStatus !== 429) throw e;
-      await sleep(1_000);
-      candles = await okxCandles(symbol, 5);
+    // Até 4 tentativas na OKX, alternando entre os dois endereços, com espera crescente após 429.
+    let lastErr: SourceError | null = null;
+    for (let i = 0; i < 4 && !candles; i++) {
+      try {
+        candles = await okxCandles(symbol, 5, OKX_HOSTS[i % OKX_HOSTS.length]);
+      } catch (e) {
+        lastErr = e as SourceError;
+        if ((lastErr.httpStatus !== 429 && lastErr.httpStatus !== 0) || Date.now() > deadline) break;
+        await sleep(400 * (i + 1));
+      }
     }
+    if (!candles) throw lastErr!;
     out.source = "okx";
     out.okxStatus = 200;
   } catch (e) {
@@ -81,10 +85,11 @@ async function probeOne(symbol: string): Promise<CoinProbe> {
 
 export async function runPriceProbe() {
   // Uma moeda por vez, com pausa: 10 pedidos simultâneos geram HTTP 429 na OKX a partir da nuvem.
+  const deadline = Date.now() + 35_000; // sem novas tentativas depois disso: a rodada termina antes do limite
   const coins: CoinProbe[] = [];
   for (const s of SERVER_UNIVERSE) {
-    coins.push(await probeOne(s));
-    await sleep(250);
+    coins.push(await probeOne(s, deadline));
+    await sleep(300);
   }
   const ok = coins.filter((c) => c.ok).length;
   const sources = [...new Set(coins.filter((c) => c.source).map((c) => c.source))];
