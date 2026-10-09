@@ -40,7 +40,7 @@ async function probeOne(symbol: string, deadline: number): Promise<CoinProbe> {
         candles = await okxCandles(symbol, 5, OKX_HOSTS[i % OKX_HOSTS.length]);
       } catch (e) {
         lastErr = e as SourceError;
-        if (lastErr.httpStatus !== 429 || Date.now() > deadline) break;
+        if ((lastErr.httpStatus !== 429 && lastErr.httpStatus !== 0) || Date.now() > deadline) break;
         await sleep(400 * (i + 1));
       }
     }
