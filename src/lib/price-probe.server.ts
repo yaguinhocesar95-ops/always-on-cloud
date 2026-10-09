@@ -2,7 +2,7 @@
  * Conferência de preços feita em TODA rodada automática (mesmo sem usuários):
  * busca velas 1m das moedas do universo do servidor pela OKX (reserva Bybit).
  */
-import { SourceError, bybitCandles, okxCandles, type Candle1m } from "@/lib/server-prices";
+import { SourceError, binanceCandles, bybitCandles, okxCandles, type Candle1m } from "@/lib/server-prices";
 
 /** Universo fixo do servidor: 10 moedas listadas em USDT na OKX e na Bybit. */
 export const SERVER_UNIVERSE = [
@@ -18,7 +18,8 @@ const fmt = (ms: number, tz: string) =>
 export type CoinProbe = {
   symbol: string;
   ok: boolean;
-  source?: "okx" | "bybit";
+  source?: "okx" | "bybit" | "binance";
+  binanceStatus?: number;
   okxStatus?: number;
   bybitStatus?: number;
   error?: string;
@@ -47,13 +48,21 @@ async function probeOne(symbol: string): Promise<CoinProbe> {
     out.okxStatus = err.httpStatus;
     out.error = err.message;
     try {
-      candles = await bybitCandles(symbol, 5);
-      out.source = "bybit";
-      out.bybitStatus = 200;
-    } catch (e2) {
-      const err2 = e2 as SourceError;
-      out.bybitStatus = err2.httpStatus;
-      out.error = `${err.message} | ${err2.message}`;
+      candles = await binanceCandles(symbol, 5);
+      out.source = "binance";
+      out.binanceStatus = 200;
+    } catch (eb) {
+      const errB = eb as SourceError;
+      out.binanceStatus = errB.httpStatus;
+      try {
+        candles = await bybitCandles(symbol, 5);
+        out.source = "bybit";
+        out.bybitStatus = 200;
+      } catch (e2) {
+        const err2 = e2 as SourceError;
+        out.bybitStatus = err2.httpStatus;
+        out.error = `${err.message} | ${errB.message} | ${err2.message}`;
+      }
     }
   }
   if (candles && candles.length) {
