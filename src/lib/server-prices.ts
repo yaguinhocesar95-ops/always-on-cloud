@@ -38,8 +38,11 @@ async function get(source: "okx" | "bybit" | "binance", url: string): Promise<un
   return r.json();
 }
 
-export async function okxCandles(symbol: string, limit = 300): Promise<Candle1m[]> {
-  const url = `https://www.okx.com/api/v5/market/candles?instId=${okxId(symbol)}&bar=1m&limit=${Math.min(limit, 300)}`;
+/** Endereços da OKX: o principal e o da AWS (outra rota, outro limite de pedidos). */
+export const OKX_HOSTS = ["https://www.okx.com", "https://aws.okx.com"];
+
+export async function okxCandles(symbol: string, limit = 300, host = OKX_HOSTS[0]!): Promise<Candle1m[]> {
+  const url = `${host}/api/v5/market/candles?instId=${okxId(symbol)}&bar=1m&limit=${Math.min(limit, 300)}`;
   const j = (await get("okx", url)) as { code: string; msg: string; data: string[][] };
   if (j.code !== "0") throw new SourceError("okx", 200, `okx code ${j.code} ${j.msg}`);
   return j.data
